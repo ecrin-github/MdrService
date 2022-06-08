@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
 
-const string openCorsPolicyName = "Open";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +31,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(openCorsPolicyName, p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy(ApiConfigs.OpenCorsPolicyName, p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
 builder.Services.Configure<KestrelServerOptions>(options =>
@@ -76,7 +75,7 @@ app.UseSwaggerUI(c =>
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCors(openCorsPolicyName);
+app.UseCors(ApiConfigs.OpenCorsPolicyName);
 
 app.MapControllers();
 
