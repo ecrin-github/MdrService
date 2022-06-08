@@ -2,8 +2,10 @@ using System.Text.Json;
 using MdrService.Configs;
 using MdrService.Contracts.Requests.Elasticsearch.v1;
 using MdrService.Contracts.Responses.v1;
+using MdrService.Contracts.Responses.v1.DTO.v1.ObjectListResponse;
 using MdrService.Contracts.Responses.v1.DTO.v1.StudyListResponse;
 using MdrService.Interfaces;
+using MdrService.Models.Object;
 using MdrService.Models.Study;
 using Nest;
 
@@ -11,6 +13,13 @@ namespace MdrService.Services;
 
 public class ElasticsearchService : IElasticsearchService
 {
+    private readonly IMdrMapping _mdrMapping;
+
+    public ElasticsearchService(IMdrMapping mdrMapping)
+    {
+        _mdrMapping = mdrMapping ?? throw new ArgumentNullException(nameof(mdrMapping));
+    }
+    
     private static int? CalculateStartFrom(int? page, int? pageSize)
     {
         if (page == null && pageSize == null) return null;
@@ -23,13 +32,49 @@ public class ElasticsearchService : IElasticsearchService
         return startFrom;
     }
 
+    private BaseResponse<StudyListResponse> MapElasticsearchResponse(ISearchResponse<Study> response)
+    {
+        var studyListResponse = new List<StudyListResponse>();
+        foreach (var hit in response.Hits)
+        {
+            var mappedStudy = _mdrMapping.BuildElasticsearchStudyResponse(hit.Source);
+
+            var objectListResponse = new List<ObjectListResponse>();
+            if (hit.InnerHits.ContainsKey("linked_data_objects"))
+            {
+                var dataObjects = hit.InnerHits["linked_data_objects"].Documents<DataObject>();
+                if (dataObjects != null)
+                {
+                    objectListResponse.AddRange(dataObjects.Select(dataObject => _mdrMapping.BuildElasticsearchObjectResponse(dataObject)));
+                }
+            }
+            else
+            {
+                if (hit.Source.LinkedDataObjects!.Count > 0)
+                {
+                    objectListResponse.AddRange(hit.Source.LinkedDataObjects.Select(dataObject => _mdrMapping.BuildElasticsearchObjectResponse(dataObject)));
+                }
+            }
+                
+            mappedStudy.LinkedDataObjects = objectListResponse;
+                
+            studyListResponse.Add(mappedStudy);
+        }
+            
+        return new BaseResponse<StudyListResponse>()
+        {
+            Total = (int)response.Total,
+            Data = studyListResponse
+        };
+    }
+
     private static ElasticClient GetConnection()
     {
         var settings = new ConnectionSettings(new Uri(ElasticsearchConfigs.Url));
         return new ElasticClient(settings);
     }
 
-    private static bool HasProperty(object obj, string propertyName)
+    private static bool HasProperty(object? obj, string propertyName)
     {
         if (obj == null) return false;
         return obj.GetType().GetProperty(propertyName) != null;
@@ -42,7 +87,7 @@ public class ElasticsearchService : IElasticsearchService
 
         var identifierValue = specificStudyRequest.SearchValue.ToUpper().Trim();
 
-        List<QueryContainer> filters = null;
+        List<QueryContainer> filters = new List<QueryContainer>();
         if (HasProperty(specificStudyRequest, "Filters") && specificStudyRequest.Filters != null)
         {
             filters = specificStudyRequest.Filters.Select(param => new RawQuery(JsonSerializer.Serialize(param)))
@@ -56,13 +101,13 @@ public class ElasticsearchService : IElasticsearchService
                 Path = new Field("study_identifiers"),
                 Query = new TermQuery()
                         {
-                            Field = Infer.Field<Study>(p => p.StudyIdentifiers.First()
-                                .IdentifierType.Id),
+                            Field = Infer.Field<Study>(p => p.StudyIdentifiers!.First()
+                                .IdentifierType!.Id),
                             Value = specificStudyRequest.SearchType
                         } &&
                         new TermQuery()
                         {
-                            Field = Infer.Field<Study>(p => p.StudyIdentifiers.First()
+                            Field = Infer.Field<Study>(p => p.StudyIdentifiers!.First()
                                 .IdentifierValue),
                             Value = identifierValue
                         }
@@ -99,9 +144,7 @@ public class ElasticsearchService : IElasticsearchService
 
         var results = await GetConnection().SearchAsync<Study>(searchRequest);
 
-        var studyListResponse = new List<StudyListResponse>();
-
-        return new BaseResponse<StudyListResponse>();
+        return MapElasticsearchResponse(results);
     }
 
     public async Task<BaseResponse<StudyListResponse>> GetByStudyCharacteristics(
@@ -109,7 +152,7 @@ public class ElasticsearchService : IElasticsearchService
     {
         var startFrom = CalculateStartFrom(studyCharacteristicsRequest.Page, studyCharacteristicsRequest.Size);
 
-        List<QueryContainer> filters = null;
+        List<QueryContainer> filters = new List<QueryContainer>();
         if (HasProperty(studyCharacteristicsRequest, "Filters") && studyCharacteristicsRequest.Filters != null)
         {
             filters = studyCharacteristicsRequest.Filters.Select(param => new RawQuery(JsonSerializer.Serialize(param)))
@@ -125,7 +168,7 @@ public class ElasticsearchService : IElasticsearchService
                 Path = Infer.Field<Study>(p => p.StudyTitles),
                 Query = new SimpleQueryStringQuery()
                 {
-                    Fields = Infer.Field<Study>(f => f.StudyTitles.First().TitleText),
+                    Fields = Infer.Field<Study>(f => f.StudyTitles!.First().TitleText),
                     Query = studyCharacteristicsRequest.TitleContains,
                     DefaultOperator = Operator.And
                 }
@@ -139,7 +182,7 @@ public class ElasticsearchService : IElasticsearchService
                 Path = Infer.Field<Study>(p => p.StudyTopics),
                 Query = new SimpleQueryStringQuery()
                 {
-                    Fields = Infer.Field<Study>(f => f.StudyTopics.First().MeshValue).And("original_value"),
+                    Fields = Infer.Field<Study>(f => f.StudyTopics!.First().MeshValue).And("original_value"),
                     Query = studyCharacteristicsRequest.TopicsInclude,
                     DefaultOperator = Operator.And
                 }
@@ -193,9 +236,7 @@ public class ElasticsearchService : IElasticsearchService
 
         var results = await GetConnection().SearchAsync<Study>(searchRequest);
 
-        var studyListResponse = new List<StudyListResponse>();
-
-        return new BaseResponse<StudyListResponse>();
+        return MapElasticsearchResponse(results);
     }
 
     public async Task<BaseResponse<StudyListResponse>> GetViaPublishedPaper(
@@ -203,7 +244,7 @@ public class ElasticsearchService : IElasticsearchService
     {
         var startFrom = CalculateStartFrom(viaPublishedPaperRequest.Page, viaPublishedPaperRequest.Size);
 
-        List<QueryContainer> filters = null;
+        List<QueryContainer> filters = new List<QueryContainer>();
         if (HasProperty(viaPublishedPaperRequest, "Filters") && viaPublishedPaperRequest.Filters != null)
         {
             filters = viaPublishedPaperRequest.Filters.Select(param => new RawQuery(JsonSerializer.Serialize(param)))
@@ -216,7 +257,7 @@ public class ElasticsearchService : IElasticsearchService
         {
             mustQuery.Add(new TermQuery()
             {
-                Field = Infer.Field<Study>(p => p.LinkedDataObjects.First().Doi),
+                Field = Infer.Field<Study>(p => p.LinkedDataObjects!.First().Doi),
                 Value = viaPublishedPaperRequest.SearchValue
             });
         }
@@ -226,11 +267,11 @@ public class ElasticsearchService : IElasticsearchService
             {
                 new NestedQuery()
                 {
-                    Path = Infer.Field<Study>(p => p.LinkedDataObjects.First().ObjectTitles.First().TitleText),
+                    Path = Infer.Field<Study>(p => p.LinkedDataObjects!.First().ObjectTitles!.First().TitleText),
                     Query = new SimpleQueryStringQuery()
                     {
                         Query = viaPublishedPaperRequest.SearchValue,
-                        Fields = Infer.Field<Study>(p => p.LinkedDataObjects.First().ObjectTitles.First().TitleText),
+                        Fields = Infer.Field<Study>(p => p.LinkedDataObjects!.First().ObjectTitles!.First().TitleText),
                         DefaultOperator = Operator.And
                     }
                 }
@@ -271,9 +312,7 @@ public class ElasticsearchService : IElasticsearchService
 
         var results = await GetConnection().SearchAsync<Study>(searchRequest);
 
-        var studyListResponse = new List<StudyListResponse>();
-
-        return new BaseResponse<StudyListResponse>();
+        return MapElasticsearchResponse(results);
     }
 
     public async Task<BaseResponse<StudyListResponse>> GetByStudyId(StudyIdEsRequest studyIdRequest)
@@ -289,6 +328,7 @@ public class ElasticsearchService : IElasticsearchService
                 )
             )
         );
-        return new BaseResponse<StudyListResponse>();
+
+        return MapElasticsearchResponse(results);
     }
 }

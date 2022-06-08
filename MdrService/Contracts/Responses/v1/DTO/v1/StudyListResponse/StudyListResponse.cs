@@ -11,11 +11,11 @@ public class StudyListResponse
     public string? StudyEnrolment { get; set; }
     public AgeResponse? MinAge { get; set; }
     public AgeResponse? MaxAge { get; set; }
-    public StudyIdentifierListResponse[]? StudyIdentifiers { get; set; }
-    public StudyTitleListResponse[]? StudyTitles { get; set; }
-    public StudyFeatureListResponse[]? StudyFeatures { get; set; }
-    public StudyTopicListResponse[]? StudyTopics { get; set; }
-    public StudyRelationListResponse[]? StudyRelationships { get; set; }
+    public ICollection<StudyIdentifierListResponse>? StudyIdentifiers { get; set; }
+    public ICollection<StudyTitleListResponse>? StudyTitles { get; set; }
+    public ICollection<StudyFeatureListResponse>? StudyFeatures { get; set; }
+    public ICollection<StudyTopicListResponse>? StudyTopics { get; set; }
+    public ICollection<StudyRelationListResponse>? StudyRelationships { get; set; }
     public string? ProvenanceString { get; set; }
-    public ObjectListResponse.ObjectListResponse[]? LinkedDataObjects { get; set; }
+    public ICollection<ObjectListResponse.ObjectListResponse>? LinkedDataObjects { get; set; }
 }

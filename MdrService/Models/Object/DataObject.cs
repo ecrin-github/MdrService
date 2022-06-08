@@ -50,39 +50,39 @@ public class DataObject
 
     [Nested]
     [PropertyName("object_instances")]
-    public ObjectInstance[]? ObjectInstances { get; set; }
+    public ICollection<ObjectInstance>? ObjectInstances { get; set; }
 
     [Nested]
     [PropertyName("object_titles")]
-    public ObjectTitle[]? ObjectTitles { get; set; }
+    public ICollection<ObjectTitle>? ObjectTitles { get; set; }
 
     [Nested]
     [PropertyName("object_dates")]
-    public ObjectDate[]? ObjectDates { get; set; }
+    public ICollection<ObjectDate>? ObjectDates { get; set; }
 
     [Nested]
     [PropertyName("object_contributors")]
-    public ObjectContributor[]? ObjectContributors { get; set; }
+    public ICollection<ObjectContributor>? ObjectContributors { get; set; }
 
     [Nested]
     [PropertyName("object_topics")]
-    public ObjectTopic[]? ObjectTopics { get; set; }
+    public ICollection<ObjectTopic>? ObjectTopics { get; set; }
 
     [Nested]
     [PropertyName("object_identifiers")]
-    public ObjectIdentifier[]? ObjectIdentifiers { get; set; }
+    public ICollection<ObjectIdentifier>? ObjectIdentifiers { get; set; }
 
     [Nested]
     [PropertyName("object_descriptions")]
-    public ObjectDescription[]? ObjectDescriptions { get; set; }
+    public ICollection<ObjectDescription>? ObjectDescriptions { get; set; }
 
     [Nested]
     [PropertyName("object_rights")]
-    public ObjectRight[]? ObjectRights { get; set; }
+    public ICollection<ObjectRight>? ObjectRights { get; set; }
 
     [Nested]
     [PropertyName("object_relationships")]
-    public ObjectRelationship[]? ObjectRelationships { get; set; }
+    public ICollection<ObjectRelationship>? ObjectRelationships { get; set; }
 
     [Number(Name = "linked_studies")] public int[]? LinkedStudies { get; set; }
 

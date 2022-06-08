@@ -6,13 +6,17 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.OpenApi.Models;
 
+const string openCorsPolicyName = "Open";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+/*
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.KnownProxies.Add(IPAddress.Parse("51.210.99.16"));
 });
+*/
 
 builder.Services.AddApplicationServices(builder.Configuration);
 
@@ -28,7 +32,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Open", p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy(openCorsPolicyName, p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
 builder.Services.Configure<KestrelServerOptions>(options =>
@@ -36,17 +40,19 @@ builder.Services.Configure<KestrelServerOptions>(options =>
     options.AllowSynchronousIO = true;
 });
 
-builder.WebHost.UseUrls("https://localhost:5270");
+// builder.WebHost.UseUrls("https://localhost:5270");
 
 // Docker setting
 // builder.WebHost.UseKestrel(options => {options.Listen(IPAddress.Any, 80);});
 
 var app = builder.Build();
 
+/*
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
+*/
 
 app.UseMiddleware<ExceptionMiddleware>();
 
@@ -70,7 +76,7 @@ app.UseSwaggerUI(c =>
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseCors("Open");
+app.UseCors(openCorsPolicyName);
 
 app.MapControllers();
 

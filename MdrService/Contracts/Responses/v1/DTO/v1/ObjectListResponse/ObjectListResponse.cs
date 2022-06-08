@@ -36,23 +36,23 @@ public class ObjectListResponse
         
     public DatasetConsent? DatasetConsent { get; set; }
         
-    public ObjectInstanceListResponse[]? ObjectInstances { get; set; }
+    public ICollection<ObjectInstanceListResponse>? ObjectInstances { get; set; }
         
-    public ObjectTitleListResponse[]? ObjectTitles { get; set; }
+    public ICollection<ObjectTitleListResponse>? ObjectTitles { get; set; }
         
-    public ObjectDateListResponse[]? ObjectDates { get; set; }
+    public ICollection<ObjectDateListResponse>? ObjectDates { get; set; }
         
-    public ObjectContributorListResponse[]? ObjectContributors { get; set; }
+    public ICollection<ObjectContributorListResponse>? ObjectContributors { get; set; }
         
-    public ObjectTopicListResponse[]? ObjectTopics { get; set; }
+    public ICollection<ObjectTopicListResponse>? ObjectTopics { get; set; }
         
-    public ObjectIdentifierListResponse[]? ObjectIdentifiers { get; set; }
+    public ICollection<ObjectIdentifierListResponse>? ObjectIdentifiers { get; set; }
         
-    public ObjectDescriptionListResponse[]? ObjectDescriptions { get; set; }
+    public ICollection<ObjectDescriptionListResponse>? ObjectDescriptions { get; set; }
         
-    public ObjectRightListResponse[]? ObjectRights { get; set; }
+    public ICollection<ObjectRightListResponse>? ObjectRights { get; set; }
         
-    public ObjectRelationshipListResponse[]? ObjectRelationships { get; set; }
+    public ICollection<ObjectRelationshipListResponse>? ObjectRelationships { get; set; }
         
     public int[]? LinkedStudies { get; set; }
         

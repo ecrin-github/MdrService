@@ -13,7 +13,7 @@ namespace MdrService.Mapping;
 
 public class MdrMapping : IMdrMapping
 {
-    public StudyFeatureListResponse[] MapStudyFeatures(StudyFeature[] studyFeatures)
+    public ICollection<StudyFeatureListResponse> MapStudyFeatures(ICollection<StudyFeature> studyFeatures)
     {
         return studyFeatures.Select(sf => new StudyFeatureListResponse
         {
@@ -23,7 +23,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public StudyIdentifierListResponse[] MapStudyIdentifiers(StudyIdentifier[] studyIdentifiers)
+    public ICollection<StudyIdentifierListResponse> MapStudyIdentifiers(ICollection<StudyIdentifier> studyIdentifiers)
     {
         return studyIdentifiers.Select(si => new StudyIdentifierListResponse()
             {
@@ -31,14 +31,14 @@ public class MdrMapping : IMdrMapping
                 IdentifierValue = si.IdentifierValue,
                 IdentifierType = si.IdentifierType?.Name,
                 IdentifierDate = si.IdentifierDate,
-                IdentifierOrg = new IdentifierOrg()
+                IdentifierOrg = si.IdentifierOrg == null ? null : new IdentifierOrg
                     { Id = si.IdentifierOrg?.Id, Name = si.IdentifierOrg?.Name, RorId = si.IdentifierOrg?.RorId },
                 IdentifierLink = si.IdentifierLink
             })
             .ToArray();
     }
 
-    public StudyRelationListResponse[] MapStudyRelationships(StudyRelation[] studyRelationships)
+    public ICollection<StudyRelationListResponse> MapStudyRelationships(ICollection<StudyRelation> studyRelationships)
     {
         return studyRelationships.Select(sr => new StudyRelationListResponse()
             {
@@ -47,7 +47,7 @@ public class MdrMapping : IMdrMapping
             .ToArray();
     }
 
-    public StudyTitleListResponse[] MapStudyTitles(StudyTitle[] studyTitles)
+    public ICollection<StudyTitleListResponse> MapStudyTitles(ICollection<StudyTitle> studyTitles)
     {
         return studyTitles.Select(st => new StudyTitleListResponse()
         {
@@ -59,7 +59,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public StudyTopicListResponse[] MapStudyTopics(StudyTopic[] studyTopics)
+    public ICollection<StudyTopicListResponse> MapStudyTopics(ICollection<StudyTopic> studyTopics)
     {
         return studyTopics.Select(st => new StudyTopicListResponse()
         {
@@ -74,20 +74,20 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectContributorListResponse[] MapObjectContributors(ObjectContributor[] objectContributors)
+    public ICollection<ObjectContributorListResponse> MapObjectContributors(ICollection<ObjectContributor> objectContributors)
     {
         return objectContributors.Select(oc => new ObjectContributorListResponse()
         {
             Id = oc.Id,
             ContributionType = oc.ContributionType?.Name,
             IsIndividual = oc.IsIndividual,
-            Organisation = new Contracts.Responses.v1.DTO.v1.Common.ContribOrg
+            Organisation = oc.Organisation == null ? null :  new Contracts.Responses.v1.DTO.v1.Common.ContribOrg
             {
                 Id = oc.Organisation?.Id,
                 Name = oc.Organisation?.Name,
                 RorId = oc.Organisation?.RorId
             },
-            Person = new Contracts.Responses.v1.DTO.v1.Common.Person
+            Person = oc.Person == null ? null :  new Contracts.Responses.v1.DTO.v1.Common.Person
             {
                 FamilyName = oc.Person?.FamilyName,
                 GivenName = oc.Person?.GivenName,
@@ -143,7 +143,7 @@ public class MdrMapping : IMdrMapping
         };
     }
 
-    public ObjectDateListResponse[] MapObjectDates(ObjectDate[] objectDates)
+    public ICollection<ObjectDateListResponse> MapObjectDates(ICollection<ObjectDate> objectDates)
     {
         return objectDates.Select(od => new ObjectDateListResponse()
         {
@@ -151,13 +151,13 @@ public class MdrMapping : IMdrMapping
             DateType = od.DateType?.Name,
             DateIsRange = od.DateIsRange,
             DateAsString = od.DateAsString,
-            StartDate = new Contracts.Responses.v1.DTO.v1.Common.Date
+            StartDate = od.StartDate == null ? null :  new Contracts.Responses.v1.DTO.v1.Common.Date
             {
                 Year = od.StartDate?.Year,
                 Month = od.StartDate?.Month,
                 Day = od.StartDate?.Day
             },
-            EndDate = new Contracts.Responses.v1.DTO.v1.Common.Date
+            EndDate = od.EndDate == null ? null :  new Contracts.Responses.v1.DTO.v1.Common.Date
             {
                 Year = od.EndDate?.Year,
                 Month = od.EndDate?.Month,
@@ -167,7 +167,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectDescriptionListResponse[] MapObjectDescriptions(ObjectDescription[] objectDescriptions)
+    public ICollection<ObjectDescriptionListResponse> MapObjectDescriptions(ICollection<ObjectDescription> objectDescriptions)
     {
         return objectDescriptions.Select(od => new ObjectDescriptionListResponse()
         {
@@ -179,7 +179,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectIdentifierListResponse[] MapObjectIdentifiers(ObjectIdentifier[] objectIdentifiers)
+    public ICollection<ObjectIdentifierListResponse> MapObjectIdentifiers(ICollection<ObjectIdentifier> objectIdentifiers)
     {
         return objectIdentifiers.Select(oi => new ObjectIdentifierListResponse()
         {
@@ -187,7 +187,7 @@ public class MdrMapping : IMdrMapping
             IdentifierValue = oi.IdentifierValue,
             IdentifierType = oi.IdentifierType?.Name,
             IdentifierDate = oi.IdentifierDate,
-            IdentifierOrg = new IdentifierOrg()
+            IdentifierOrg = oi.IdentifierOrg == null ? null :  new IdentifierOrg
             {
                 Id = oi.IdentifierOrg?.Id,
                 Name = oi.IdentifierOrg?.Name,
@@ -196,19 +196,19 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectInstanceListResponse[] MapObjectInstances(ObjectInstance[] objectInstances)
+    public ICollection<ObjectInstanceListResponse> MapObjectInstances(ICollection<ObjectInstance> objectInstances)
     {
         return objectInstances.Select(oi => new ObjectInstanceListResponse()
         {
             Id = oi.Id,
             RepositoryOrg = oi.RepositoryOrg?.Name,
-            AccessDetails = new Contracts.Responses.v1.DTO.v1.Common.InstanceAccessDetails
+            AccessDetails = oi.AccessDetails == null ? null :  new Contracts.Responses.v1.DTO.v1.Common.InstanceAccessDetails
             {
                 DirectAccess = oi.AccessDetails?.DirectAccess,
                 Url = oi.AccessDetails?.Url,
                 UrlLastChecked = oi.AccessDetails?.UrlLastChecked
             },
-            ResourceDetails = new Contracts.Responses.v1.DTO.v1.Common.InstanceResourceDetails()
+            ResourceDetails = oi.ResourceDetails == null ? null :  new Contracts.Responses.v1.DTO.v1.Common.InstanceResourceDetails
             {
                 TypeId = oi.ResourceDetails?.TypeId,
                 TypeName = oi.ResourceDetails?.TypeName,
@@ -219,7 +219,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectRelationshipListResponse[] MapObjectRelationships(ObjectRelationship[] objectRelationships)
+    public ICollection<ObjectRelationshipListResponse> MapObjectRelationships(ICollection<ObjectRelationship> objectRelationships)
     {
         return objectRelationships.Select(or => new ObjectRelationshipListResponse()
         {
@@ -229,7 +229,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectRightListResponse[] MapObjectRights(ObjectRight[] objectRights)
+    public ICollection<ObjectRightListResponse> MapObjectRights(ICollection<ObjectRight> objectRights)
     {
         return objectRights.Select(or => new ObjectRightListResponse()
         {
@@ -240,7 +240,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectTitleListResponse[] MapObjectTitles(ObjectTitle[] objectTitles)
+    public ICollection<ObjectTitleListResponse> MapObjectTitles(ICollection<ObjectTitle> objectTitles)
     {
         return objectTitles.Select(ot => new ObjectTitleListResponse()
         {
@@ -252,7 +252,7 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    public ObjectTopicListResponse[] MapObjectTopics(ObjectTopic[] objectTopics)
+    public ICollection<ObjectTopicListResponse> MapObjectTopics(ICollection<ObjectTopic> objectTopics)
     {
         return objectTopics.Select(ot => new ObjectTopicListResponse()
         {
@@ -267,10 +267,10 @@ public class MdrMapping : IMdrMapping
         }).ToArray();
     }
 
-    private static string? ObjectUrlExtraction(ObjectInstance[]? objectInstances)
+    private static string? ObjectUrlExtraction(ICollection<ObjectInstance>? objectInstances)
     {
-        if (objectInstances is { Length: 0 }) return string.Empty;
-        return !string.IsNullOrEmpty(objectInstances!.First().AccessDetails?.Url) ? objectInstances!.First().AccessDetails?.Url : string.Empty;
+        if (objectInstances!.Count == 0) return string.Empty;
+        return !string.IsNullOrEmpty(objectInstances.First().AccessDetails?.Url) ? objectInstances.First().AccessDetails?.Url : string.Empty;
     }
 
     public ObjectListResponse BuildElasticsearchObjectResponse(DataObject dataObject)
@@ -286,14 +286,14 @@ public class MdrMapping : IMdrMapping
             ObjectUrl = ObjectUrlExtraction(dataObject.ObjectInstances),
             PublicationYear = dataObject.PublicationYear,
             LangCode = dataObject.LangCode,
-            ManagingOrganisation = new Contracts.Responses.v1.DTO.v1.Common.ManagingOrg
+            ManagingOrganisation = dataObject.ManagingOrganisation == null ? null :  new Contracts.Responses.v1.DTO.v1.Common.ManagingOrg
             {
                 Id = dataObject.ManagingOrganisation?.Id,
                 Name = dataObject.ManagingOrganisation?.Name,
                 RorId = dataObject.ManagingOrganisation?.RorId
             },
-            AccessType = dataObject.AccessType?.Name,
-            AccessDetails = new Contracts.Responses.v1.DTO.v1.Common.AccessDetails
+            AccessType = dataObject.AccessType == null ? null :  dataObject.AccessType!.Name,
+            AccessDetails = dataObject.AccessDetails == null ? null : new Contracts.Responses.v1.DTO.v1.Common.AccessDetails
             {
                 Description = dataObject.AccessDetails?.Description,
                 Url = dataObject.AccessDetails?.Url,
@@ -303,33 +303,33 @@ public class MdrMapping : IMdrMapping
             DatasetRecordKeys = dataObject.DatasetRecordKeys != null ? MapDatasetRecordKeys(dataObject.DatasetRecordKeys) : null,
             DatasetDeidentLevel = dataObject.DatasetDeidentLevel != null ? MapDatasetDeidentLevel(dataObject.DatasetDeidentLevel) : null,
             DatasetConsent = dataObject.DatasetConsent != null ? MapDatasetConsent(dataObject.DatasetConsent) : null,
-            ObjectContributors = dataObject.ObjectContributors!.Length > 0 ? MapObjectContributors(dataObject.ObjectContributors) 
+            ObjectContributors = dataObject.ObjectContributors?.Count > 0 ? MapObjectContributors(dataObject.ObjectContributors) 
                 : Array.Empty<ObjectContributorListResponse>(),
-            ObjectDates = dataObject.ObjectDates!.Length > 0 ? MapObjectDates(dataObject.ObjectDates) : Array.Empty<ObjectDateListResponse>(),
-            ObjectDescriptions = dataObject.ObjectDescriptions!.Length > 0 ? MapObjectDescriptions(dataObject.ObjectDescriptions) 
+            ObjectDates = dataObject.ObjectDates?.Count > 0 ? MapObjectDates(dataObject.ObjectDates) : Array.Empty<ObjectDateListResponse>(),
+            ObjectDescriptions = dataObject.ObjectDescriptions?.Count > 0 ? MapObjectDescriptions(dataObject.ObjectDescriptions) 
                 : Array.Empty<ObjectDescriptionListResponse>(),
-            ObjectIdentifiers = dataObject.ObjectIdentifiers!.Length > 0 ? MapObjectIdentifiers(dataObject.ObjectIdentifiers) 
+            ObjectIdentifiers = dataObject.ObjectIdentifiers?.Count > 0 ? MapObjectIdentifiers(dataObject.ObjectIdentifiers) 
                 : Array.Empty<ObjectIdentifierListResponse>(),
-            ObjectInstances = dataObject.ObjectInstances!.Length > 0 ? MapObjectInstances(dataObject.ObjectInstances) 
+            ObjectInstances = dataObject.ObjectInstances?.Count > 0 ? MapObjectInstances(dataObject.ObjectInstances) 
                 : Array.Empty<ObjectInstanceListResponse>(),
-            ObjectRelationships = dataObject.ObjectRelationships!.Length > 0 ? MapObjectRelationships(dataObject.ObjectRelationships) 
+            ObjectRelationships = dataObject.ObjectRelationships?.Count > 0 ? MapObjectRelationships(dataObject.ObjectRelationships) 
                 : Array.Empty<ObjectRelationshipListResponse>(),
-            ObjectRights = dataObject.ObjectRights!.Length > 0 ? MapObjectRights(dataObject.ObjectRights) : Array.Empty<ObjectRightListResponse>(),
-            ObjectTitles = dataObject.ObjectTitles!.Length > 0 ? MapObjectTitles(dataObject.ObjectTitles) : Array.Empty<ObjectTitleListResponse>(),
-            ObjectTopics = dataObject.ObjectTopics!.Length > 0 ? MapObjectTopics(dataObject.ObjectTopics) : Array.Empty<ObjectTopicListResponse>(),
+            ObjectRights = dataObject.ObjectRights?.Count > 0 ? MapObjectRights(dataObject.ObjectRights) : Array.Empty<ObjectRightListResponse>(),
+            ObjectTitles = dataObject.ObjectTitles?.Count > 0 ? MapObjectTitles(dataObject.ObjectTitles) : Array.Empty<ObjectTitleListResponse>(),
+            ObjectTopics = dataObject.ObjectTopics?.Count > 0 ? MapObjectTopics(dataObject.ObjectTopics) : Array.Empty<ObjectTopicListResponse>(),
             LinkedStudies = dataObject.LinkedStudies,
             ProvenanceString = dataObject.ProvenanceString
         };
     }
 
-    public ObjectListResponse[] BuildElasticsearchObjectListResponse(DataObject[]? dataObjects)
+    public ICollection<ObjectListResponse> BuildElasticsearchObjectListResponse(ICollection<DataObject> dataObjects)
     {
-        return dataObjects!.Select(BuildElasticsearchObjectResponse).ToArray();
+        return dataObjects.Select(BuildElasticsearchObjectResponse).ToArray();
     }
 
     public StudyListResponse BuildElasticsearchStudyResponse(Study study)
     {
-        return new StudyListResponse()
+        return new StudyListResponse
         {
             Id = study.Id,
             DisplayTitle = study.DisplayTitle,
@@ -338,26 +338,26 @@ public class MdrMapping : IMdrMapping
             StudyStatus = study.StudyStatus?.Name,
             StudyGenderElig = study.StudyGenderElig?.Name,
             StudyEnrolment = study.StudyEnrolment,
-            MinAge = new AgeResponse
+            MinAge = study.MinAge == null ? null : new AgeResponse
             {
-                UnitName = study.MinAge?.UnitName,
-                Value = study.MinAge?.Value
+                Value = study.MinAge?.Value,
+                UnitName = study.MinAge?.UnitName
             },
-            MaxAge = new AgeResponse
+            MaxAge = study.MaxAge == null ? null : new AgeResponse
             {
-                UnitName = study.MaxAge?.UnitName,
-                Value = study.MaxAge?.Value
+                Value = study.MaxAge?.Value,
+                UnitName = study.MaxAge?.UnitName
             },
-            StudyIdentifiers = study.StudyIdentifiers!.Length > 0 ? MapStudyIdentifiers(study.StudyIdentifiers) : Array.Empty<StudyIdentifierListResponse>(),
-            StudyFeatures = study.StudyFeatures!.Length > 0 ? MapStudyFeatures(study.StudyFeatures) : Array.Empty<StudyFeatureListResponse>(),
-            StudyRelationships = study.StudyRelationships!.Length > 0 ? MapStudyRelationships(study.StudyRelationships) : Array.Empty<StudyRelationListResponse>(),
-            StudyTitles = study.StudyTitles!.Length > 0 ? MapStudyTitles(study.StudyTitles) : Array.Empty<StudyTitleListResponse>(),
-            StudyTopics = study.StudyTopics!.Length > 0 ? MapStudyTopics(study.StudyTopics) : Array.Empty<StudyTopicListResponse>(),
+            StudyIdentifiers = study.StudyIdentifiers?.Count > 0 ? MapStudyIdentifiers(study.StudyIdentifiers) : Array.Empty<StudyIdentifierListResponse>(),
+            StudyFeatures = study.StudyFeatures?.Count > 0 ? MapStudyFeatures(study.StudyFeatures) : Array.Empty<StudyFeatureListResponse>(),
+            StudyRelationships = study.StudyRelationships?.Count > 0 ? MapStudyRelationships(study.StudyRelationships) : Array.Empty<StudyRelationListResponse>(),
+            StudyTitles = study.StudyTitles?.Count > 0 ? MapStudyTitles(study.StudyTitles) : Array.Empty<StudyTitleListResponse>(),
+            StudyTopics = study.StudyTopics?.Count > 0 ? MapStudyTopics(study.StudyTopics) : Array.Empty<StudyTopicListResponse>(),
             ProvenanceString = study.ProvenanceString
         };
     }
 
-    public StudyListResponse[] BuildElasticsearchStudyListResponse(Study[] studies)
+    public ICollection<StudyListResponse> BuildElasticsearchStudyListResponse(ICollection<Study> studies)
     {
         return studies.Select(BuildElasticsearchStudyResponse).ToArray();
     }

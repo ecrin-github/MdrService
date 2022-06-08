@@ -33,27 +33,27 @@ public class Study
 
     [Nested]
     [PropertyName("study_identifiers")]
-    public StudyIdentifier[]? StudyIdentifiers { get; set; }
+    public ICollection<StudyIdentifier>? StudyIdentifiers { get; set; }
 
     [Nested]
     [PropertyName("study_titles")]
-    public StudyTitle[]? StudyTitles { get; set; }
+    public ICollection<StudyTitle>? StudyTitles { get; set; }
 
     [Nested]
     [PropertyName("study_features")]
-    public StudyFeature[]? StudyFeatures { get; set; }
+    public ICollection<StudyFeature>? StudyFeatures { get; set; }
 
     [Nested]
     [PropertyName("study_topics")]
-    public StudyTopic[]? StudyTopics { get; set; }
+    public ICollection<StudyTopic>? StudyTopics { get; set; }
 
     [Nested]
     [PropertyName("study_relationships")]
-    public StudyRelation[]? StudyRelationships { get; set; }
+    public ICollection<StudyRelation>? StudyRelationships { get; set; }
 
     [Text(Name = "provenance_string")] public string? ProvenanceString { get; set; }
 
     [Nested]
     [PropertyName("linked_data_objects")]
-    public DataObject[]? LinkedDataObjects { get; set; }
+    public ICollection<DataObject>? LinkedDataObjects { get; set; }
 }

@@ -7,19 +7,19 @@ namespace MdrService.Interfaces;
 
 public interface IMdrMapping
 {
-    StudyFeatureListResponse[] MapStudyFeatures(StudyFeature[] studyFeatures);
+    ICollection<StudyFeatureListResponse> MapStudyFeatures(ICollection<StudyFeature> studyFeatures);
 
-    StudyIdentifierListResponse[] MapStudyIdentifiers(StudyIdentifier[] studyIdentifiers);
+    ICollection<StudyIdentifierListResponse> MapStudyIdentifiers(ICollection<StudyIdentifier> studyIdentifiers);
 
-    StudyRelationListResponse[] MapStudyRelationships(StudyRelation[] studyRelationships);
+    ICollection<StudyRelationListResponse> MapStudyRelationships(ICollection<StudyRelation> studyRelationships);
 
-    StudyTitleListResponse[] MapStudyTitles(StudyTitle[] studyTitles);
+    ICollection<StudyTitleListResponse> MapStudyTitles(ICollection<StudyTitle> studyTitles);
 
-    StudyTopicListResponse[] MapStudyTopics(StudyTopic[] studyTopics);
+    ICollection<StudyTopicListResponse> MapStudyTopics(ICollection<StudyTopic> studyTopics);
 
 
     // Object mappers
-    ObjectContributorListResponse[] MapObjectContributors(ObjectContributor[] objectContributors);
+    ICollection<ObjectContributorListResponse> MapObjectContributors(ICollection<ObjectContributor> objectContributors);
 
     Contracts.Responses.v1.DTO.v1.Common.DatasetRecordKeys MapDatasetRecordKeys(DatasetRecordKeys datasetRecordKeys);
 
@@ -27,26 +27,26 @@ public interface IMdrMapping
 
     Contracts.Responses.v1.DTO.v1.Common.DatasetConsent MapDatasetConsent(DatasetConsent datasetConsent);
 
-    ObjectDateListResponse[] MapObjectDates(ObjectDate[] objectDates);
+    ICollection<ObjectDateListResponse> MapObjectDates(ICollection<ObjectDate> objectDates);
 
-    ObjectDescriptionListResponse[] MapObjectDescriptions(ObjectDescription[] objectDescriptions);
+    ICollection<ObjectDescriptionListResponse> MapObjectDescriptions(ICollection<ObjectDescription> objectDescriptions);
 
-    ObjectIdentifierListResponse[] MapObjectIdentifiers(ObjectIdentifier[] objectIdentifiers);
+    ICollection<ObjectIdentifierListResponse> MapObjectIdentifiers(ICollection<ObjectIdentifier> objectIdentifiers);
 
-    ObjectInstanceListResponse[] MapObjectInstances(ObjectInstance[] objectInstances);
+    ICollection<ObjectInstanceListResponse> MapObjectInstances(ICollection<ObjectInstance> objectInstances);
 
-    ObjectRelationshipListResponse[] MapObjectRelationships(ObjectRelationship[] objectRelationships);
+    ICollection<ObjectRelationshipListResponse> MapObjectRelationships(ICollection<ObjectRelationship> objectRelationships);
 
-    ObjectRightListResponse[] MapObjectRights(ObjectRight[] objectRights);
+    ICollection<ObjectRightListResponse> MapObjectRights(ICollection<ObjectRight> objectRights);
 
-    ObjectTitleListResponse[] MapObjectTitles(ObjectTitle[] objectTitles);
+    ICollection<ObjectTitleListResponse> MapObjectTitles(ICollection<ObjectTitle> objectTitles);
 
-    ObjectTopicListResponse[] MapObjectTopics(ObjectTopic[] objectTopics);
+    ICollection<ObjectTopicListResponse> MapObjectTopics(ICollection<ObjectTopic> objectTopics);
     
     
     ObjectListResponse BuildElasticsearchObjectResponse(DataObject dataObject);
-    ObjectListResponse[] BuildElasticsearchObjectListResponse(DataObject[] dataObjects);
+    ICollection<ObjectListResponse> BuildElasticsearchObjectListResponse(ICollection<DataObject> dataObjects);
 
     StudyListResponse BuildElasticsearchStudyResponse(Study study);
-    StudyListResponse[] BuildElasticsearchStudyListResponse(Study[] studies);
+    ICollection<StudyListResponse> BuildElasticsearchStudyListResponse(ICollection<Study> studies);
 }
