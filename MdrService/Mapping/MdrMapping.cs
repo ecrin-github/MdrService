@@ -269,8 +269,8 @@ public class MdrMapping : IMdrMapping
 
     private static string? ObjectUrlExtraction(ICollection<ObjectInstance>? objectInstances)
     {
-        if (objectInstances!.Count == 0) return string.Empty;
-        return !string.IsNullOrEmpty(objectInstances.First().AccessDetails?.Url) ? objectInstances.First().AccessDetails?.Url : string.Empty;
+        if (objectInstances?.Count == 0) return string.Empty;
+        return !string.IsNullOrEmpty(objectInstances?.First().AccessDetails?.Url) ? objectInstances.First().AccessDetails?.Url : string.Empty;
     }
 
     public ObjectListResponse BuildElasticsearchObjectResponse(DataObject dataObject)
